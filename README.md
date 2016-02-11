@@ -1,9 +1,3 @@
-
-# THIS IS STILL UNDER DEVELOPMENT PLEASE DO NOT USE! :) thanks!
-
-
---------------
-
 # Grape::Builder
 
 Use [Builder](https://github.com/jimweirich/builder) templates in [Grape](https://github.com/intridea/grape)!
