@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "grape-builder"
   spec.version       = Grape::Builder::VERSION
   spec.authors       = ["Plex"]
-  spec.email         = ["masushu@gmail.com"]
+  spec.email         = ["jose@plexapp.com"]
   spec.description   = %q{Use Builder in Grape}
   spec.summary       = %q{Use Builder in Grape}
   spec.homepage      = "https://github.com/plexinc/grape-builder"
