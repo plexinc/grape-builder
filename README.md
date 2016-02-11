@@ -1,28 +1,26 @@
-# Grape::Jbuilder
+# Grape::Builder
 
-Use [Jbuilder](https://github.com/rails/jbuilder) templates in [Grape](https://github.com/intridea/grape)!
+Use [Builder](https://github.com/jimweirich/builder) templates in [Grape](https://github.com/intridea/grape)!
 
-This gem is completely based on [grape-rabl](https://github.com/LTe/grape-rabl).
-
-[![Build Status](https://travis-ci.org/milkcocoa/grape-jbuilder.png?branch=master)](http://travis-ci.org/milkcocoa/grape-jbuilder)
+This gem is completely based on [grape-jbuilder](https://github.com/milkcocoa/grape-jbuilder) which in turn is completely based on [grape-rabl](https://github.com/LTe/grape-rabl).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'grape-jbuilder'
+    gem 'grape-builder' 
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+<!--Or install it yourself as:-->
 
-    $ gem install grape-jbuilder
+<!--    $ gem install grape-builder-->
 
 ## Usage
 
-### Require grape-jbuilder
+### Require grape-builder
 
 ```ruby
 # config.ru
@@ -32,44 +30,45 @@ require 'grape/jbuilder'
 ### Setup view root directory
 ```ruby
 # config.ru
-require 'grape/jbuilder'
+require 'grape/builder'
 
 use Rack::Config do |env|
   env['api.tilt.root'] = '/path/to/view/root/directory'
 end
 ```
 
-### Tell your API to use Grape::Formatter:: Jbuilder
+### Tell your API to use Grape::Formatter:: Builder
 
 ```ruby
 class API < Grape::API
-  format :json
-  formatter :json, Grape::Formatter::Jbuilder
+  format :xml
+  formatter :xml, Grape::Formatter::Builder
 end
 ```
 
-### Use Jbuilder templates conditionally
+### Use Builder templates conditionally
 
 Add the template name to the API options.
 
 ```ruby
-get '/user/:id', jbuilder: 'user.jbuilder' do
+get '/user/:id', builder: 'user.builder' do
   @user = User.find(params[:id])
 end
 ```
 
-You can use instance variables in the Jbuilder template.
+You can use instance variables in the builder template.
 
 ```ruby
-json.user do
-  json.(@user, :name, :email)
-  json.project do
-    json.(@project, :name)
+xml.user do
+  xml.name(@user.name)
+  xml.email(@user.email)j
+  xml.project do
+    xml.name(@project.name)
   end
 end
 ```
 
-### Use Jbuilder templates dynamically
+### Use builder templates dynamically
 
 ```ruby
 get ':id' do
@@ -84,35 +83,35 @@ get ':id' do
 end
 ```
 
-## You can omit .jbuilder
+## You can omit .builder
 
 The following are identical.
 
 ```ruby
-get '/home', jbuilder: 'view'
-get '/home', jbuilder: 'view.jbuilder'
+get '/home', builder: 'view'
+get '/home', builder: 'view.jbuilder'
 ```
 
 ### Example
 
 ```ruby
 # config.ru
-require 'grape/jbuilder'
+require 'grape/builder'
 
 use Rack::Config do |env|
   env['api.tilt.root'] = '/path/to/view/root/directory'
 end
 
 class UserAPI < Grape::API
-  format :json
-  formatter :json, Grape::Formatter::Jbuilder
+  format :xml
+  formatter :xml, Grape::Formatter::Builder
 
-  # use Jbuilder with 'user.jbuilder' template
-  get '/user/:id', jbuilder: 'user' do
+  # use Builder with 'user.builder' template
+  get '/user/:id', builder: 'user' do
     @user = User.find(params[:id])
   end
 
-  # do not use jbuilder, fallback to the defalt Grape JSON formatter
+  # do not use builder, fallback to the defalt Grape XML formatter
   get '/users' do
     User.all
   end
@@ -120,9 +119,9 @@ end
 ```
 
 ```ruby
-# user.jbuilder
-json.user do
-  json.(@user, :name)
+# user.builder
+xml.user do
+  xmlname(@user.name)
 end
 ```
 
@@ -133,18 +132,18 @@ Create a grape application.
 ```ruby
 # app/api/user.rb
 class MyAPI < Grape::API
-  format :json
-  formatter :json, Grape::Formatter::Jbuilder
-  get '/user/:id', jbuilder: 'user' do
+  format :xml
+  formatter :xml, Grape::Formatter::Builder
+  get '/user/:id', builder: 'user' do
     @user = User.find(params[:id])
   end
 end
 ```
 
 ```ruby
-# app/views/api/user.jbuilder
-json.user do
-  json.(@user, :name)
+# app/views/api/user.builder
+xml.user do
+  xml.name(@user.name)
 end
 ```
 
@@ -168,6 +167,27 @@ GrapeExampleRails::Application.routes.draw do
 end
 ```
 
+## Partials
+
+
+Use the `partial.render` method to render a partial template
+
+```ruby
+# app/views/api/user/index.builder
+xml.users do
+ @users.each do |u|
+    xml << partial.render('user/show', user: u)
+ end
+end
+```
+
+```ruby
+# app/views/api/user/show.builder
+xml.user do
+  xml.name(@user.name)
+end
+```
+
 ## Rspec
 
 See "Writing Tests" in https://github.com/intridea/grape.
@@ -177,7 +197,9 @@ Enjoy :)
 
 ## Special Thanks
 
-Special thanks to [@LTe](https://github.com/LTe) because this gem is completely based on [grape-rabl](https://github.com/LTe/grape-rabl).
+Special thanks to [@milkcocoa](https://github.com/milkcocoa) because this gem is completely based on [grape-jbuilder](https://github.com/milkcocoa/grape-jbuilder).
+
+Also thanks to [@LTe](https://github.com/LTe) since `grape-jbuilder` is based on [grape-rabl](https://github.com/LTe/grape-rabl).
 
 ## Contributing
 
